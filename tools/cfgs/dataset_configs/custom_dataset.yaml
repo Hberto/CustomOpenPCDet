@@ -2,7 +2,7 @@ DATASET: 'CustomDataset'
 DATA_PATH: '../data/custom'
 
 
-CLASS_NAMES: ['boat']  
+#CLASS_NAMES: ['boat']  
 POINT_CLOUD_RANGE: [-75.2, -75.2, -2, 75.2, 75.2, 4]
 
 MAP_CLASS_TO_KITTI: {
@@ -34,6 +34,7 @@ DATA_AUGMENTOR:
               - custom_dbinfos_train.pkl
           PREPARE: {
              filter_by_min_points: ['boat:5'],
+#             filter_by_difficulty: [-1],
           }
 
           SAMPLE_GROUPS: ['boat:20']
