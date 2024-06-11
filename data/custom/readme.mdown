@@ -1,1 +1,18 @@
-# ToDo
+# Data Preparation
+
+
+
+## Alignment of custom dataset coordinates to openpcdet normative coordinates
+
+Current Lidar coordinate system:
+- x: back
+- y: right
+- z: upwards
+
+ OpenPCDet's coordinate system is:
+
+- x: forward
+- y: left
+- z: upwards
+
+
