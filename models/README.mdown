@@ -1,0 +1,4 @@
+# Explanation
+
+This folder contains local saved checkpoints of models. Gitignore and large git uploads doesn't allow to upload checkpoints.
+Either transfer them locally or load them google drive and other databases.
