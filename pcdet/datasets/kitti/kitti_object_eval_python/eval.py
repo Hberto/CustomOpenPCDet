@@ -28,7 +28,8 @@ def get_thresholds(scores: np.ndarray, num_gt, num_sample_pts=41):
 
 
 def clean_data(gt_anno, dt_anno, current_class, difficulty):
-    CLASS_NAMES = ['car', 'pedestrian', 'cyclist', 'van', 'person_sitting', 'truck']
+    #CLASS_NAMES = ['car', 'pedestrian', 'cyclist', 'van', 'person_sitting', 'truck']
+    CLASS_NAMES = ['boat', 'paddler']
     MIN_HEIGHT = [40, 25, 25]
     MAX_OCCLUSION = [0, 1, 2]
     MAX_TRUNCATION = [0.15, 0.3, 0.5]
@@ -44,10 +45,10 @@ def clean_data(gt_anno, dt_anno, current_class, difficulty):
         valid_class = -1
         if (gt_name == current_cls_name):
             valid_class = 1
-        elif (current_cls_name == "Pedestrian".lower()
+        elif (current_cls_name == "Paddler".lower()
               and "Person_sitting".lower() == gt_name):
             valid_class = 0
-        elif (current_cls_name == "Car".lower() and "Van".lower() == gt_name):
+        elif (current_cls_name == "Boat".lower() and "Van".lower() == gt_name):
             valid_class = 0
         else:
             valid_class = -1
@@ -457,11 +458,14 @@ def eval_class(gt_annos,
     Args:
         gt_annos: dict, must from get_label_annos() in kitti_common.py
         dt_annos: dict, must from get_label_annos() in kitti_common.py
-        current_classes: list of int, 0: car, 1: pedestrian, 2: cyclist
+        *old*current_classes: list of int, 0: car, 1: pedestrian, 2: cyclist*old*
         difficultys: list of int. eval difficulty, 0: easy, 1: normal, 2: hard
         metric: eval type. 0: bbox, 1: bev, 2: 3d
         min_overlaps: float, min overlap. format: [num_overlap, metric, class].
         num_parts: int. a parameter for fast calculate algorithm
+
+        Change:
+        current_classes: list of int, 0: boat, 1: paddler
 
     Returns:
         dict of recall, precision and aos
@@ -653,7 +657,8 @@ def get_official_eval_result(gt_annos, dt_annos, current_classes, PR_detail_dict
     #    5: 'Truck'
     #}
     class_to_name = {
-        0: 'boat'
+        0: 'Boat',
+        1: 'Paddler'
     }
     name_to_class = {v: n for n, v in class_to_name.items()}
     if not isinstance(current_classes, (list, tuple)):
@@ -750,12 +755,16 @@ def get_official_eval_result(gt_annos, dt_annos, current_classes, PR_detail_dict
 
 
 def get_coco_eval_result(gt_annos, dt_annos, current_classes):
+    #class_to_name = {
+    #    0: 'Car',
+    #    1: 'Pedestrian',
+    #    2: 'Cyclist',
+    #    3: 'Van',
+    #    4: 'Person_sitting',
+    #}
     class_to_name = {
-        0: 'Car',
-        1: 'Pedestrian',
-        2: 'Cyclist',
-        3: 'Van',
-        4: 'Person_sitting',
+        0: 'Boat',
+        1: 'Paddler',
     }
     class_to_range = {
         0: [0.5, 0.95, 10],
