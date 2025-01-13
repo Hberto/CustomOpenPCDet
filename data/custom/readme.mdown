@@ -1,18 +1,20 @@
-# Data Preparation
+# Custom_Log_Map
+Following log and roadmap shows the usage of different custom datasets. Every datasets is used to train PV-RCNN with the custom dataset.
+Every exported model will be evaluated and compared each other.
 
+## Custom Datasets
+[ ] base data 
 
+[ ] base data + dataset_xyz_10
 
-## Alignment of custom dataset coordinates to openpcdet normative coordinates
+[ ] base data + dataset_xyz_10_30
 
-Current Lidar coordinate system:
-- x: back
-- y: right
-- z: upwards
+[ ] base data + dataset_xyz_10_30_60
 
- OpenPCDet's coordinate system is:
+[ ] base data + dataset_xyz_10_30_60_90
 
-- x: forward
-- y: left
-- z: upwards
+[ ] base data + dataset_xyz_10_30_60_90_120
 
+[ ] base data + dataset_xyz_10_30_60_90_180
 
+[ ] base data + dataset_xyz_10_30_60_90_180_240
