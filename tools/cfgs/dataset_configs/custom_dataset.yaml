@@ -2,7 +2,7 @@ DATASET: 'CustomDataset'
 DATA_PATH: '../data/custom'
 
 
-#CLASS_NAMES: ['boat']  
+CLASS_NAMES: ['boat']  
 #POINT_CLOUD_RANGE: [-75.2, -75.2, -2, 75.2, 75.2, 4]
 POINT_CLOUD_RANGE: [-402.0519, -566.65857, -135.223411, 402.0519, 566.65857, 135.223411]
 
@@ -48,12 +48,12 @@ DATA_AUGMENTOR:
           LIMIT_WHOLE_SCENE: True
 
         - NAME: random_world_flip
-          ALONG_AXIS_LIST: ['x']
-          #ALONG_AXIS_LIST: ['x', 'y']
+          #ALONG_AXIS_LIST: ['x']
+          ALONG_AXIS_LIST: ['x', 'y']
 
         - NAME: random_world_rotation
-          WORLD_ROT_ANGLE: [0, 0]
-          #WORLD_ROT_ANGLE: [-0.78539816, 0.78539816]
+          #WORLD_ROT_ANGLE: [0, 0]
+          WORLD_ROT_ANGLE: [-0.78539816, 0.78539816]
 
 
         - NAME: random_world_scaling
