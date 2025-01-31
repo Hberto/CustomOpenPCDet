@@ -153,10 +153,15 @@ class VoxelSetAbstraction(nn.Module):
             self.SA_layer_names.append(src_name)
 
             c_in += cur_num_c_out
+            
+            # DEBUG
+            print(f"PRINT C after pointnet2_stack_modules: {c_in}")
 
         if 'bev' in self.model_cfg.FEATURES_SOURCE:
             c_bev = num_bev_features
             c_in += c_bev
+            # DEBUG
+            print(f"PRINT C after bev in features_source: {c_in}")
 
         if 'raw_points' in self.model_cfg.FEATURES_SOURCE:
             self.SA_rawpoints, cur_num_c_out = pointnet2_stack_modules.build_local_aggregation_module(
@@ -164,7 +169,9 @@ class VoxelSetAbstraction(nn.Module):
             )
 
             c_in += cur_num_c_out
+            print(f"PRINT C after raw_points in features_source: {c_in}")
 
+        # Hardcode c_in here?
         self.vsa_point_feature_fusion = nn.Sequential(
             nn.Linear(c_in, self.model_cfg.NUM_OUTPUT_FEATURES, bias=False),
             nn.BatchNorm1d(self.model_cfg.NUM_OUTPUT_FEATURES),
@@ -172,6 +179,9 @@ class VoxelSetAbstraction(nn.Module):
         )
         self.num_point_features = self.model_cfg.NUM_OUTPUT_FEATURES
         self.num_point_features_before_fusion = c_in
+        
+        # DEBUG
+        print(self.num_point_features_before_fusion)
 
     def interpolate_from_bev_features(self, keypoints, bev_features, batch_size, bev_stride):
         """
@@ -403,6 +413,7 @@ class VoxelSetAbstraction(nn.Module):
 
         point_features = torch.cat(point_features_list, dim=-1)
 
+        # DEBUG - error is here
         batch_dict['point_features_before_fusion'] = point_features.view(-1, point_features.shape[-1])
         point_features = self.vsa_point_feature_fusion(point_features.view(-1, point_features.shape[-1]))
 
