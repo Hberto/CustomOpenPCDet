@@ -153,10 +153,12 @@ class VoxelSetAbstraction(nn.Module):
             self.SA_layer_names.append(src_name)
 
             c_in += cur_num_c_out
+            print(f"C1:", {c_in})
 
         if 'bev' in self.model_cfg.FEATURES_SOURCE:
             c_bev = num_bev_features
             c_in += c_bev
+            print(f"C2:", {c_in})
 
         if 'raw_points' in self.model_cfg.FEATURES_SOURCE:
             self.SA_rawpoints, cur_num_c_out = pointnet2_stack_modules.build_local_aggregation_module(
@@ -164,7 +166,9 @@ class VoxelSetAbstraction(nn.Module):
             )
 
             c_in += cur_num_c_out
-
+        print(f"INPUT feature dimension to fusion layer:", {c_in})
+        #logger = common_utils.create_logger()
+        #logger.info(f"INPUT feature dimension to fusion layer:", {c_in})
         self.vsa_point_feature_fusion = nn.Sequential(
             nn.Linear(c_in, self.model_cfg.NUM_OUTPUT_FEATURES, bias=False),
             nn.BatchNorm1d(self.model_cfg.NUM_OUTPUT_FEATURES),
@@ -172,6 +176,7 @@ class VoxelSetAbstraction(nn.Module):
         )
         self.num_point_features = self.model_cfg.NUM_OUTPUT_FEATURES
         self.num_point_features_before_fusion = c_in
+        print(f"INPUT feature dimension to fusion layer:", {c_in})
 
     def interpolate_from_bev_features(self, keypoints, bev_features, batch_size, bev_stride):
         """
@@ -328,6 +333,7 @@ class VoxelSetAbstraction(nn.Module):
             new_xyz=new_xyz,
             new_xyz_batch_cnt=new_xyz_batch_cnt,
             features=xyz_features.contiguous(),
+            #features=xyz_features.contiguous() if xyz_features is not None else None
         )
         return pooled_features
 
@@ -402,6 +408,9 @@ class VoxelSetAbstraction(nn.Module):
             point_features_list.append(pooled_features)
 
         point_features = torch.cat(point_features_list, dim=-1)
+
+        # DEBUG
+        #print(f"ACTUAL INPUT DIM: { point_features.shape[-1]}")
 
         batch_dict['point_features_before_fusion'] = point_features.view(-1, point_features.shape[-1])
         point_features = self.vsa_point_feature_fusion(point_features.view(-1, point_features.shape[-1]))
