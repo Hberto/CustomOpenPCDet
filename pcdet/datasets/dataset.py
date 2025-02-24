@@ -203,6 +203,7 @@ class DatasetTemplate(torch_data.Dataset):
                 data_dict['gt_boxes2d'] = data_dict['gt_boxes2d'][selected]
 
         if data_dict.get('points', None) is not None:
+            #print(f"SHAPE before point encoder: {data_dict['points'].shape}")
             data_dict = self.point_feature_encoder.forward(data_dict)
 
         data_dict = self.data_processor.forward(

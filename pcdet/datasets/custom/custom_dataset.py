@@ -91,6 +91,7 @@ class CustomDataset(DatasetTemplate):
         info = copy.deepcopy(self.custom_infos[index])
         sample_idx = info['point_cloud']['lidar_idx']
         points = self.get_lidar(sample_idx)
+        #print(f"-----SHAPE of points: {points.shape}")
         input_dict = {
             'frame_id': self.sample_id_list[index],
             'points': points
