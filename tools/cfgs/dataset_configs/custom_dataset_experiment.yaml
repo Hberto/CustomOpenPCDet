@@ -1,0 +1,87 @@
+DATASET: 'CustomDataset'
+DATA_PATH: '../data/custom'
+
+
+CLASS_NAMES: ['boat']  
+#POINT_CLOUD_RANGE: [-60.0, -60.0,-10.0, 60.0, 60.0, 10.0]
+#POINT_CLOUD_RANGE: [-402.0519, -566.65857, -135.223411, 402.0519, 566.65857, 135.223411]
+#POINT_CLOUD_RANGE: [-242.2198, -218.15051, -75.071892, 364.8185, 215.8652, 75.589012]
+#POINT_CLOUD_RANGE: [-256.0, -256.0, -3.0, 256.0, 256.0, 1.0] -> works
+#POINT_CLOUD_RANGE: [-160.0, -160.0, -10.0, 160.0, 160.0, 110.0]
+#POINT_CLOUD_RANGE: [-306.3500061, -316.79998779, -317.32000732, -262.3500061, -268.79998779, 375.52999878]
+#POINT_CLOUD_RANGE: [-204.8, -204.8, -3, 204.8, 204.8, 5]  # X,Y,Z min/max
+POINT_CLOUD_RANGE: [-256, -256, -5, 256, 256, 15]  # XY extended, Z for masts
+
+
+MAP_CLASS_TO_KITTI: {
+    'boat': 'Car',
+}
+
+DATA_SPLIT: {
+    'train': train,
+    'test': val
+}
+
+INFO_PATH: {
+    'train': [custom_infos_train.pkl],
+    'test': [custom_infos_val.pkl],
+}
+
+POINT_FEATURE_ENCODING: {
+    encoding_type: absolute_coordinates_encoding,
+    used_feature_list: ['x', 'y', 'z', 'intensity'],
+    src_feature_list: ['x', 'y', 'z', 'intensity'],
+}
+
+DATA_AUGMENTOR:
+    DISABLE_AUG_LIST: ['random_world_rotation']
+    AUG_CONFIG_LIST:
+        - NAME: gt_sampling
+          USE_ROAD_PLANE: False
+          DB_INFO_PATH:
+              - custom_dbinfos_train.pkl
+          PREPARE: {
+             filter_by_min_points: ['boat:5'],
+          }
+
+          SAMPLE_GROUPS: ['boat:20']
+          NUM_POINT_FEATURES: 4
+          DATABASE_WITH_FAKELIDAR: False
+          REMOVE_EXTRA_WIDTH: [0.0, 0.0, 0.0]
+          LIMIT_WHOLE_SCENE: True
+
+        - NAME: random_world_flip
+          ALONG_AXIS_LIST: ['x', 'y']
+
+        - NAME: random_world_rotation
+          WORLD_ROT_ANGLE: [-0.78539816, 0.78539816]
+
+        - NAME: random_world_scaling
+          WORLD_SCALE_RANGE: [0.95, 1.05]
+
+DATA_PROCESSOR:
+    - NAME: mask_points_and_boxes_outside_range
+      REMOVE_OUTSIDE_BOXES: True
+
+    - NAME: shuffle_points
+      SHUFFLE_ENABLED: {
+        'train': True,
+        'test': False
+      }
+
+    - NAME: transform_points_to_voxels
+      #VOXEL_SIZE: [9.48495, 6.7815, 3.7665]
+      #VOXEL_SIZE: [25.12824375, 35.41616063, 3.380585275]
+      #VOXEL_SIZE: [25.0, 35.0, 3.375]
+      #VOXEL_SIZE: [2.375, 1.75, 3.7665226]
+      #VOXEL_SIZE:  [0.16, 0.16, 0.4]
+      #VOXEL_SIZE: [0.1, 0.1, 0.1] ->works
+      #VOXEL_SIZE: [2.75, 3.0, 17.32125015]
+      #VOXEL_SIZE: [0.2, 0.2, 0.25] -> old setup
+      VOXEL_SIZE: [0.15, 0.15, 0.2]
+      MAX_POINTS_PER_VOXEL: 5
+      MAX_NUMBER_OF_VOXELS: {
+        'train': 100000,
+        'test': 100000
+      }
+
