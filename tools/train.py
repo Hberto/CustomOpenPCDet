@@ -43,9 +43,6 @@ def parse_config():
     parser.add_argument('--start_epoch', type=int, default=0, help='')
     parser.add_argument('--num_epochs_to_eval', type=int, default=0, help='number of checkpoints to be evaluated')
     parser.add_argument('--save_to_file', action='store_true', default=False, help='')
-    # Evaluation
-    parser.add_argument('--train_acc', type=bool, default=True, help='calculate train  accuracy during training')
-    parser.add_argument('--val_acc', type=bool, default=True, help='calculate validatin accuracy during training')
     
     parser.add_argument('--use_tqdm_to_record', action='store_true', default=False, help='if True, the intermediate losses will not be logged to file, only tqdm will be used')
     parser.add_argument('--logger_iter_interval', type=int, default=50, help='')
@@ -174,36 +171,7 @@ def main():
     # -----------------------start training---------------------------
     logger.info('**********************Start training %s/%s(%s)**********************'
                 % (cfg.EXP_GROUP_PATH, cfg.TAG, args.extra_tag))
-    
-    """ prepare validation and train acc set """
-    validation_loader = None
-    train_accloader = None
-    
-    if args.val_acc:
-        
-        validation_set, validation_loader, sampler = build_dataloader(
-            dataset_cfg=cfg.DATA_CONFIG,
-            class_names=cfg.CLASS_NAMES,
-            batch_size=args.batch_size,
-            dist=False, workers=args.workers, logger=logger, training=False
-        )
-        
-    if args.train_acc:    
-        
-        train_accset, train_accloader, train_accsampler = build_dataloader(
-            dataset_cfg=cfg.DATA_CONFIG,
-            class_names=cfg.CLASS_NAMES,
-            batch_size=args.batch_size,
-            dist=dist_train, workers=args.workers,
-            logger=logger,
-            training=True,
-            merge_all_iters_to_one_epoch=args.merge_all_iters_to_one_epoch,
-            total_epochs=args.epochs,
-            train_acc=True,
-        )
-    
-    
-    
+
     train_model(
         model,
         optimizer,
@@ -228,7 +196,10 @@ def main():
         use_logger_to_record=not args.use_tqdm_to_record, 
         show_gpu_stat=not args.wo_gpu_stat,
         use_amp=args.use_amp,
-        cfg=cfg
+        cfg=cfg,
+        test_loader=None, 
+        trainacc_loader=None, 
+        args=args
     )
 
     if hasattr(train_set, 'use_shared_memory') and train_set.use_shared_memory:
