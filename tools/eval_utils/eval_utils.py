@@ -60,17 +60,7 @@ def eval_one_epoch(cfg, model, dataloader, epoch_id, logger, dist_test=False, sa
         print(f"batch_dict: {batch_dict}")
         
         skip_batch = False
-        
-            # Check for the existence and non-empty 'voxel_features'
-        if "voxel_features" in batch_dict:
-            print(f"Batch {i} voxel_features shape: {batch_dict['voxel_features'].shape}")
-            if batch_dict["voxel_features"].shape[0] == 0:
-                print(f"Batch {i} has empty voxel_features. Skipping this batch.")
-                skip_batch = True
-        else:
-            print(f"Batch {i} is missing 'voxel_features'. Skipping this batch.")
-            skip_batch = True
-    
+
         # Check for the existence and non-empty 'voxel_coords'
         if "voxel_coords" in batch_dict:
             print(f"Batch {i} voxel_coords shape: {batch_dict['voxel_coords'].shape}")
@@ -80,11 +70,11 @@ def eval_one_epoch(cfg, model, dataloader, epoch_id, logger, dist_test=False, sa
         else:
             print(f"Batch {i} is missing 'voxel_coords'. Skipping this batch.")
             skip_batch = True
-    
+
         # Only proceed if all necessary data is present and non-empty
         if skip_batch:
             continue
-        
+
         # Optional assertions to further enforce non-empty inputs
         assert batch_dict["voxel_features"].shape[0] > 0, "voxel_features tensor is empty!"
         assert batch_dict["voxel_coords"].shape[0] > 0, "voxel_coords tensor is empty!"
