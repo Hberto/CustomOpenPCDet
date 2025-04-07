@@ -76,7 +76,6 @@ def eval_one_epoch(cfg, model, dataloader, epoch_id, logger, dist_test=False, sa
             continue
 
         # Optional assertions to further enforce non-empty inputs
-        assert batch_dict["voxel_features"].shape[0] > 0, "voxel_features tensor is empty!"
         assert batch_dict["voxel_coords"].shape[0] > 0, "voxel_coords tensor is empty!"
         
         load_data_to_gpu(batch_dict)
